@@ -12,7 +12,7 @@ Toolkit.run(async (tools) => {
       token: githubToken,
     });
 
-    const { data: pullRequest } = await octokit.rest.pulls.get({
+    const resp = await octokit.rest.pulls.get({
         owner: tools.context.repo.owner,
         repo: tools.context.repo.repo,
         pull_number: tools.context.payload.pull_request.number,
@@ -21,7 +21,8 @@ Toolkit.run(async (tools) => {
         }
     });
 
-    console.log('Pull Request Diff: ', pullRequest);
+    console.log('Data from octokit request: ', resp);
+    console.log('Pull Request Diff: ', resp.data);
 
     const keyWords = core.getInput('words-to-scan-for');
     core.setOutput("annotations", `echo '::error file=src/main.tsx,line=1::You Should Not be using ${keyWords} here.'`);
