@@ -1,6 +1,9 @@
 name: 'PR Scan and Warn'
 description: 'Scan the Changes in a PR and Warn about any unexpected/dangerous Words or Actions'
 inputs:
+  token:
+    description: 'GitHub Token to access the Repo'
+    required: true
   words-to-scan-for:
     description: 'Words to Search for in the PR'
     required: true
