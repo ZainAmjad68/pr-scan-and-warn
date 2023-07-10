@@ -12,7 +12,7 @@ Toolkit.run(async (tools) => {
       token: githubToken,
     });
 
-    const resp = await octokit.rest.pulls.get({
+    const { data: pullRequest } = await octokit.rest.pulls.get({
         owner: tools.context.repo.owner,
         repo: tools.context.repo.repo,
         pull_number: tools.context.payload.pull_request.number,
@@ -21,8 +21,19 @@ Toolkit.run(async (tools) => {
         }
     });
 
-    console.log('Data from octokit request: ', resp);
-    console.log('Pull Request Diff: ', resp.data);
+    const resp = await octokit.rest.pulls.listFiles({
+      owner: tools.context.repo.owner,
+      repo: tools.context.repo.repo,
+      pull_number: tools.context.payload.pull_request.number,
+      per_page: 100
+    });
+
+    resp.data
+    
+
+    console.log('Pull Request Diff: ', pullRequest);
+    console.log('Pull Request ListFiles: ', resp.data);
+
 
     const keyWords = core.getInput('words-to-scan-for');
     core.setOutput("annotations", `echo '::error file=src/main.tsx,line=1::You Should Not be using ${keyWords} here.'`);
