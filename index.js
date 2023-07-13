@@ -58,7 +58,7 @@ Toolkit.run(async (tools) => {
     files.pop();
     console.log('files changed: ', files);
   
-    let prData = getDiffWithLineNumbers('HEAD^1');
+    let prData = await getDiffWithLineNumbers('HEAD^1');
     console.log('All the Changes: ', prData);
 
   } catch (error) {
