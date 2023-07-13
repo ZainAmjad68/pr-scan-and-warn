@@ -3,6 +3,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const {Toolkit} = require('actions-toolkit');
 const {exec, execSync} = require('child_process');
+const getDiffWithLineNumbers = require('./git_diff');
 
 Toolkit.run(async (tools) => {
   try {
@@ -57,6 +58,8 @@ Toolkit.run(async (tools) => {
     files.pop();
     console.log('files changed: ', files);
   
+    let prData = getDiffWithLineNumbers('HEAD^1');
+    console.log('All the Changes: ', prData);
 
   } catch (error) {
     tools.exit.failure(error.message);
