@@ -1,4 +1,4 @@
-const exec = require('@actions/exec');
+const exec2 = require('@actions/exec');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const {Toolkit} = require('actions-toolkit');
@@ -46,8 +46,8 @@ Toolkit.run(async (tools) => {
     console.log(`The event payload: ${payload}`);
     console.log('context PR base ref: ', github.context.payload.pull_request.base.ref);
 
-    let execChangedFiles = await exec.exec(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
-    let getExecOutputChangedFiles = await exec.getExecOutput(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
+    let execChangedFiles = await exec2.exec(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
+    let getExecOutputChangedFiles = await exec2.getExecOutput(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
     console.log('execChangedFiles: ', execChangedFiles);
     console.log('getExecOutputChangedFiles: ', getExecOutputChangedFiles);
 
