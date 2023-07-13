@@ -46,13 +46,13 @@ Toolkit.run(async (tools) => {
     console.log(`The event payload: ${payload}`);
     console.log('context PR base ref: ', github.context.payload.pull_request.base.ref);
 
-    let execChangedFiles = await exec2.exec(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
-    let getExecOutputChangedFiles = await exec2.getExecOutput(`git diff --name-only ${github.context.payload.pull_request.base.ref}`);
+    let execChangedFiles = await exec2.exec(`git diff --name-only HEAD^1`);
+    let getExecOutputChangedFiles = await exec2.getExecOutput(`git diff --name-only HEAD^1`);
     console.log('execChangedFiles: ', execChangedFiles);
     console.log('getExecOutputChangedFiles: ', getExecOutputChangedFiles);
 
 
-    let changedFiles = await execSync(`git diff --name-only ${github.context.payload.pull_request.base.ref}`).toString();
+    let changedFiles = await execSync(`git diff --name-only HEAD^1`).toString();
     let files = changedFiles.split('\n');
     files.pop();
     console.log('files changed: ', files);
