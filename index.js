@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const {Toolkit} = require('actions-toolkit');
+const {exec, execSync} = require('child_process');
 
 Toolkit.run(async (tools) => {
   try {
@@ -43,6 +44,12 @@ Toolkit.run(async (tools) => {
 
     console.log(`The event payload: ${payload}`);
     console.log('context PR base ref: ', github.context.payload.pull_request.base.ref);
+
+    let changedFiles = await execSync(`git diff --name-only ${github.context.payload.pull_request.base.ref}`).toString();
+    let files = changedFiles.split('\n');
+    files.pop();
+    console.log('files changed: ', files);
+  
 
   } catch (error) {
     tools.exit.failure(error.message);
