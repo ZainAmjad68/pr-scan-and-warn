@@ -1,4 +1,4 @@
-import {exec, execSync} from "child_process";
+const {exec, execSync} = require("child_process");
 
 async function getDiffWithLineNumbers(baseBranch) {
     exec(`git diff --name-only ${baseBranch}`, (error, stdout, stderr) => {
