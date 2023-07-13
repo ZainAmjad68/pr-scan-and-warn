@@ -28,11 +28,12 @@ Toolkit.run(async (tools) => {
       per_page: 100
     });
 
-    resp.data
     
 
     console.log('Pull Request Diff: ', pullRequest);
     console.log('Pull Request ListFiles: ', resp.data);
+    const diff = core.getInput('diff');
+    console.log('Diff from git-diff-action: ', diff);
 
 
     const keyWords = core.getInput('words-to-scan-for');

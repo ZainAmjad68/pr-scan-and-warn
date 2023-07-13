@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'GitHub Token to access the Repo'
     required: true
+  diff:
+    description: 'Diff of the current PR'
+    required: false
   words-to-scan-for:
     description: 'Words to Search for in the PR'
     required: true
