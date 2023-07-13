@@ -60,6 +60,12 @@ Toolkit.run(async (tools) => {
   
     let prData = await getDiffWithLineNumbers('HEAD^1');
     console.log('All the Changes: ', prData);
+    for (const obj of prData) {
+      console.log('-----------------------');
+      console.log('fileName:', obj.fileName);
+      console.log('data:', obj.data);
+      console.log('-----------------------');
+    }
 
   } catch (error) {
     tools.exit.failure(error.message);
