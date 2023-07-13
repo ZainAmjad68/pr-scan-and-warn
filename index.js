@@ -42,7 +42,7 @@ Toolkit.run(async (tools) => {
     const payload = JSON.stringify(github.context.payload, undefined, 2);
 
     console.log(`The event payload: ${payload}`);
-    console.log('context PR body: ', github.context.payload.pull_request.body);
+    console.log('context PR base ref: ', github.context.payload.pull_request.base.ref);
 
   } catch (error) {
     tools.exit.failure(error.message);
