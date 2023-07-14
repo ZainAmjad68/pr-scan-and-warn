@@ -36,7 +36,7 @@ Toolkit.run(async (tools) => {
         previews: ['antiope'],
       },
     };
-    const response = await octokit.checks.create(initialCheckData);
+    const response = await octokit.checks.create(checkData);
     let check_id = response.data.id;
     console.log(`Check Successfully Created`, check_id);
 
