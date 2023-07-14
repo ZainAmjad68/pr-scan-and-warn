@@ -37,8 +37,8 @@ Toolkit.run(async (tools) => {
     } else {
       let annotations = [];
       let totalFiles = Object.keys(filesWithMatches).length;
+      let totalWarnings = 0;
       for (const file in filesWithMatches) {
-        let totalWarnings = 0;
         if (Array.isArray(filesWithMatches[file])) {
           filesWithMatches[file].forEach(annotation => {
             totalWarnings+=1;
