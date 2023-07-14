@@ -1,15 +1,18 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const {Octokit} = require('@octokit/rest');
+const {Toolkit} = require('actions-toolkit');
 const getDiffWithLineNumbers = require('./git_diff');
 const extractMatchingLines = require('./analyze');
 
 
-(
-  async () => {  
-    try {
+Toolkit.run(async (tools) => {
+  try {
     const githubToken = core.getInput('token');
-    const octokit = new github.getOctokit(githubToken);
-
+    const octokit = new Octokit({
+      previews: ['antiope'],
+      auth: githubToken,
+    });
     const keyWords = core.getInput('words-to-scan-for');
     const wordsToScan = keyWords.split(",").map(item => item.trim());
 
@@ -27,7 +30,10 @@ const extractMatchingLines = require('./analyze');
       head_sha: github.context.sha,
       status: 'completed',
       conclusion: 'neutral',
-      output: { title: 'PR Scan Report' }
+      output: { title: 'PR Scan Report' },
+      mediaType: {
+        previews: ['antiope'],
+      }
     };
 
     if (Object.keys(filesWithMatches).length === 0) {
@@ -57,7 +63,7 @@ const extractMatchingLines = require('./analyze');
     }
     
     const check = await octokit.rest.checks.create(checkData);
-    core.info(`Check Successfully Created :`, check);
+    console.log(`Check Successfully Created :`, check);
 
     // work on incorporating test coverage stuff as well
     // parse how the coverage file is structured then
@@ -65,6 +71,9 @@ const extractMatchingLines = require('./analyze');
     // display those annotations as well
 
   } catch (error) {
-    core.setFailed(error.message);
+    tools.exit.failure(error.message);
   }
-})();
+
+  // If we got this far things were a success
+  tools.exit.success('PR Scan and Warn Analysis completed successfully!')
+});
