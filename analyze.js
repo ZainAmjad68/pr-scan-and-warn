@@ -9,7 +9,8 @@ function findWordsInLine(line, lineNumber, wordsToScan) {
             let defaultAnnotation = `Please be careful about the use of ${word}. It can have dangerous consequences.`;
             annotations.push({
                 lineNumber,
-                annotation: warningMap[word] || defaultAnnotation,
+                wordFound: word,
+                annotationMessage: warningMap[word] || defaultAnnotation,
             })
         }
     })
