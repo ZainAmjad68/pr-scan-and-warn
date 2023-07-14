@@ -6,6 +6,7 @@ const {Toolkit} = require('actions-toolkit');
 const getDiffWithLineNumbers = require('./git_diff');
 const extractMatchingLines = require('./analyze');
 
+const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE;
 
 Toolkit.run(async (tools) => {
   try {
@@ -18,6 +19,28 @@ Toolkit.run(async (tools) => {
     const keyWords = core.getInput('words-to-scan-for');
     const wordsToScan = keyWords.split(",").map(item => item.trim());
 
+    const tools = new Toolkit({
+      token: githubToken,
+    });
+
+    let PR = tools.context.payload.pull_request;
+
+    let checkData = {
+      owner: tools.context.repo.owner,
+      repo: tools.context.repo.repo,
+      started_at: new Date().toISOString(),
+      head_sha: PR.head.sha,
+      status: 'in_progress',
+      name: 'PR Scan and Warn',
+      mediaType: {
+        previews: ['antiope'],
+      },
+    };
+    const response = await octokit.checks.create(initialCheckData);
+    let check_id = response.data.id;
+    console.log(`Check Successfully Created`, check_id);
+
+
     let prData = await getDiffWithLineNumbers('HEAD^1');
     
     // now use this data to first form annotations for Warnings
@@ -25,20 +48,12 @@ Toolkit.run(async (tools) => {
     
     let filesWithMatches = await extractMatchingLines(prData, wordsToScan);
 
-    let checkData = {      
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      name: 'PR Scan and Warn',
-      head_sha: github.context.sha,
-      status: 'completed',
-      conclusion: 'neutral',
-      output: { title: 'PR Scan Report' },
-      mediaType: {
-        previews: ['antiope'],
-      }
-    };
 
+    delete checkData['name'];
+    delete checkData['started_at'];
+    checkData.check_run_id = check_id;
     if (Object.keys(filesWithMatches).length === 0) {
+      checkData.output.title = 'PR Scan Summary';
       checkData.output.summary = 'All Good! We found No Use of any Dangerous Words/Actions.';
       checkData.output.annotations = [];
     } else {
@@ -49,8 +64,9 @@ Toolkit.run(async (tools) => {
         if (Array.isArray(filesWithMatches[file])) {
           filesWithMatches[file].forEach(annotation => {
             totalWarnings+=1;
+            const filePathTrimmed = file.replace(`${GITHUB_WORKSPACE}/`, '');
             annotations.push({
-              path: file,
+              path: filePathTrimmed,
               start_line: annotation.lineNumber,
               end_line: annotation.lineNumber,
               annotation_level: 'warning',
@@ -60,12 +76,21 @@ Toolkit.run(async (tools) => {
           });
         }
       }
+      checkData.output.title = 'PR Scan Summary';
       checkData.output.summary = `:::Found a Total of ${totalWarnings} Warnings in ${totalFiles} Files!:::`;
       checkData.output.annotations = annotations;
     }
-    
-    const check = await octokit.rest.checks.create(checkData);
-    console.log(`Check Successfully Created :`, check);
+    // update the check and add annotations
+    await octokit.rest.checks.update(checkData);
+    console.log(`Check Successfully Updated`, checkData);
+
+    // finally close the Check
+    delete checkData['output'].annotations;
+    checkData.conclusion = 'success';
+    checkData.status = 'completed';
+    checkData.completed_at = new Date().toISOString();
+    await octokit.rest.checks.update(checkData);
+    console.log(`Check Successfully Closed`, checkData);
 
     // work on incorporating test coverage stuff as well
     // parse how the coverage file is structured then
