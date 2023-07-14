@@ -1,13 +1,12 @@
-const exec2 = require('@actions/exec');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const {Toolkit} = require('actions-toolkit');
 const getDiffWithLineNumbers = require('./git_diff');
 const extractMatchingLines = require('./analyze');
 
 
-Toolkit.run(async (tools) => {
-  try {
+(
+  async () => {  
+    try {
     const githubToken = core.getInput('token');
     const octokit = new github.getOctokit(githubToken);
 
@@ -58,7 +57,7 @@ Toolkit.run(async (tools) => {
     }
     
     const check = await octokit.rest.checks.create(checkData);
-    console.log('check response:', check);
+    core.info(`Check Successfully Created :`, check);
 
     // work on incorporating test coverage stuff as well
     // parse how the coverage file is structured then
@@ -66,9 +65,6 @@ Toolkit.run(async (tools) => {
     // display those annotations as well
 
   } catch (error) {
-    tools.exit.failure(error.message);
+    core.setFailed(error.message);
   }
-
-  // If we got this far things were a success
-  tools.exit.success('PR Scan and Warn Analysis completed successfully!')
-})
+})();
