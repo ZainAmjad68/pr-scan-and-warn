@@ -7,9 +7,6 @@ inputs:
   words-to-scan-for:
     description: 'Words to Search for in the PR'
     required: true
-outputs:
-  annotations:
-    description: 'The Annotations to display'
 runs:
   using: 'node16'
   main: 'index.js'
