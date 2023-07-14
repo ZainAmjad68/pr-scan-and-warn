@@ -52,10 +52,11 @@ Toolkit.run(async (tools) => {
     delete checkData['name'];
     delete checkData['started_at'];
     checkData.check_run_id = check_id;
+    checkData.output = {};
     if (Object.keys(filesWithMatches).length === 0) {
-      checkData.output.title = 'PR Scan Summary';
-      checkData.output.summary = 'All Good! We found No Use of any Dangerous Words/Actions.';
-      checkData.output.annotations = [];
+      checkData['output'].title = 'PR Scan Summary';
+      checkData['output'].summary = 'All Good! We found No Use of any Dangerous Words/Actions.';
+      checkData['output'].annotations = [];
     } else {
       let annotations = [];
       let totalFiles = Object.keys(filesWithMatches).length;
@@ -76,9 +77,9 @@ Toolkit.run(async (tools) => {
           });
         }
       }
-      checkData.output.title = 'PR Scan Summary';
-      checkData.output.summary = `:::Found a Total of ${totalWarnings} Warnings in ${totalFiles} Files!:::`;
-      checkData.output.annotations = annotations;
+      checkData['output'].title = 'PR Scan Summary';
+      checkData['output'].summary = `:::Found a Total of ${totalWarnings} Warnings in ${totalFiles} Files!:::`;
+      checkData['output'].annotations = annotations;
     }
     // update the check and add annotations
     await octokit.rest.checks.update(checkData);
