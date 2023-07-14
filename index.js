@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const {Octokit} = require('@octokit/rest');
+const fetch = require("node-fetch");
 const {Toolkit} = require('actions-toolkit');
 const getDiffWithLineNumbers = require('./git_diff');
 const extractMatchingLines = require('./analyze');
@@ -12,6 +13,7 @@ Toolkit.run(async (tools) => {
     const octokit = new Octokit({
       previews: ['antiope'],
       auth: githubToken,
+      request: {fetch}
     });
     const keyWords = core.getInput('words-to-scan-for');
     const wordsToScan = keyWords.split(",").map(item => item.trim());
