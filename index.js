@@ -12,13 +12,14 @@ Toolkit.run(async (tools) => {
     const octokit = new github.getOctokit(githubToken);
 
     const keyWords = core.getInput('words-to-scan-for');
-  
+    const wordsToScan = keyWords.split(",").map(item => item.trim());
+
     let prData = await getDiffWithLineNumbers('HEAD^1');
     
     // now use this data to first form annotations for Warnings
     // display those Annotations
     
-    let filesWithMatches = await extractMatchingLines(prData, keyWords);
+    let filesWithMatches = await extractMatchingLines(prData, wordsToScan);
 
     let checkData = {      
       owner: github.context.repo.owner,
