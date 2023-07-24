@@ -9,7 +9,7 @@ inputs:
     required: true
   action-type:
     description: 'The WorkFlow Event that invoked this Action'
-    default: 'master'
+    default: 'workflow_dispatch'
     required: false
 
 runs:
