@@ -24,6 +24,7 @@ Toolkit.run(async (tools) => {
     });
 
     let PR = tools.context.payload.pull_request;
+    console.log('**tools.context.payload**', tools.context.payload);
 
     let checkData = {
       owner: tools.context.repo.owner,
