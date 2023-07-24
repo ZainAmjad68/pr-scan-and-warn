@@ -23,8 +23,24 @@ Toolkit.run(async (tools) => {
       token: githubToken,
     });
 
-    let PR = tools.context.payload.pull_request;
-    console.log('**tools.context.payload**', tools.context.payload);
+    let ref = 'HEAD^1';
+    const eventType = core.getInput('action-type');
+    console.log('eventType:', eventType);
+
+    let PR;
+    if (eventType === 'workflow_dispatch') {
+      ref = 'master';
+      PR = await octokit.pulls.get({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        pull_number: tools.context.payload.inputs.pr_number,
+      });
+      console.log('PR:', PR);
+    } else {
+      PR = tools.context.payload.pull_request;
+      console.log('**tools.context.payload**', tools.context.payload);
+    }
+
 
     let checkData = {
       owner: tools.context.repo.owner,
@@ -40,13 +56,6 @@ Toolkit.run(async (tools) => {
     const response = await octokit.checks.create(checkData);
     let check_id = response.data.id;
     console.log(`Check Successfully Created`, check_id);
-
-    let ref = 'HEAD^1';
-    const eventType = core.getInput('action-type');
-    console.log('eventType:', eventType);
-    if (eventType === 'workflow_dispatch') {
-      ref = 'master';
-    }
 
     let prData = await getDiffWithLineNumbers(ref);
     
