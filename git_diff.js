@@ -1,12 +1,14 @@
 const { exec, execSync } = require("child_process");
 
 function getDiffWithLineNumbers(baseBranch) {
+  console.log('i get here');
   return new Promise((resolve, reject) => {
     exec(`git diff --name-only ${baseBranch}`, (error, stdout, stderr) => {
       if (error) {
         reject(error);
         return;
       }
+      console.log('i do not get here');
 
       console.log("stdout: ", stdout);
       let files = stdout.split("\n");
