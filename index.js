@@ -35,6 +35,7 @@ Toolkit.run(async (tools) => {
         repo: tools.context.repo.repo,
         pull_number: tools.context.payload.inputs.pr_number,
       });
+      PR = PR.data;
       console.log('PR:', PR);
     } else {
       PR = tools.context.payload.pull_request;
