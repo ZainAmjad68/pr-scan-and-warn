@@ -29,7 +29,6 @@ Toolkit.run(async (tools) => {
 
     let PR;
     if (eventType === 'workflow_dispatch') {
-      ref = 'master';
       PR = await octokit.pulls.get({
         owner: tools.context.repo.owner,
         repo: tools.context.repo.repo,
