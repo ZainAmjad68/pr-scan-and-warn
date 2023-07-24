@@ -41,7 +41,7 @@ Toolkit.run(async (tools) => {
     console.log(`Check Successfully Created`, check_id);
 
     let ref = 'HEAD^1';
-    const eventType = core.getInput('words-to-scan-for');
+    const eventType = core.getInput('action-type');
     console.log('eventType:', eventType);
     if (eventType === 'workflow_dispatch') {
       ref = 'master';
