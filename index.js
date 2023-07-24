@@ -40,8 +40,13 @@ Toolkit.run(async (tools) => {
     let check_id = response.data.id;
     console.log(`Check Successfully Created`, check_id);
 
+    let ref = 'HEAD^1';
+    const eventType = core.getInput('words-to-scan-for');
+    if (eventType === 'workflow_dispatch') {
+      ref = 'master';
+    }
 
-    let prData = await getDiffWithLineNumbers('HEAD^1');
+    let prData = await getDiffWithLineNumbers(ref);
     
     // now use this data to first form annotations for Warnings
     // display those Annotations
