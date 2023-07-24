@@ -23,7 +23,6 @@ Toolkit.run(async (tools) => {
       token: githubToken,
     });
 
-    let ref = 'HEAD^1';
     const eventType = core.getInput('action-type');
     console.log('eventType:', eventType);
 
@@ -35,11 +34,8 @@ Toolkit.run(async (tools) => {
         pull_number: tools.context.payload.inputs.pr_number,
       });
       PR = PR.data;
-      ref = `${PR.base.ref}..${PR.head.ref}`
-      console.log('PR:', PR);
     } else {
       PR = tools.context.payload.pull_request;
-      console.log('**tools.context.payload**', tools.context.payload);
     }
 
 
@@ -58,7 +54,7 @@ Toolkit.run(async (tools) => {
     let check_id = response.data.id;
     console.log(`Check Successfully Created`, check_id);
 
-    let prData = await getDiffWithLineNumbers(ref);
+    let prData = await getDiffWithLineNumbers('HEAD^1');
     
     // now use this data to first form annotations for Warnings
     // display those Annotations
