@@ -10,7 +10,7 @@ inputs:
   action-type:
     description: 'The WorkFlow Event that invoked this Action'
     default: 'master'
-    required: true
+    required: false
 
 runs:
   using: 'node16'
